@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+  name: test-ingress
+  namespace: default
+spec:
+  rules:
+  - host: phuocpro.xyz
+    http:
+      paths:
+      - backend:
+          serviceName: mux-api-service
+          servicePort: 8080
+        path: /api(/|$)(.*)

@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"github.com/golang-migrate/migrate/v4/database/postgres"
 
 	// tom: for Initialize
 	"fmt"
@@ -16,6 +17,9 @@ import (
 	// tom: go get required
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
+	// migrate postgres
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
 type App struct {
@@ -38,7 +42,16 @@ func (a *App) Initialize(user, password, host, port, dbname string) {
 		log.Fatal(err)
 		fmt.Println("Connect to Database Error ", err)
 	}
-
+	//m, err := migrate.New(
+	//	"file://db/migrations", connectionString)
+	driver, err := postgres.WithInstance(a.DB, &postgres.Config{})
+	m, err := migrate.NewWithDatabaseInstance(
+		"file://db/migrations",
+		"postgres", driver)
+	if err != nil {
+		log.Fatal(err)
+	}
+	m.Steps(2)
 	a.Router = mux.NewRouter()
 
 	// tom: this line is added after initializeRoutes is created later on

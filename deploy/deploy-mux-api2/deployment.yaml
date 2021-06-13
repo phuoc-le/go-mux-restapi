@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mux-api2-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mux-api2
+  template:
+    metadata:
+      labels:
+        app: mux-api2
+    spec:
+      containers:
+        - name: mux-api2
+          image: gcr.io/hoang-duc-techology/go-mux-restapi2:v1.0.1
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: mux-api2-config
+                  key: PORT
+            - name: APP_DB_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: mux-api2-config
+                  key: APP_DB_USERNAME
+            - name: APP_DB_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: mux-api2-config
+                  key: APP_DB_PASSWORD
+            - name: APP_DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: mux-api2-config
+                  key: APP_DB_NAME
+            - name: APP_DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: mux-api2-config
+                  key: APP_DB_PORT
+            - name: APP_DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: mux-api2-config
+                  key: APP_DB_HOST
+                        
+            
